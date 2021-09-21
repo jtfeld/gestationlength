@@ -33,7 +33,7 @@ Keywords:  Gestation, Chimpanzee, Energetics, Life History
 
 Language: R
 
-Funding sources: Data collection was supported by the Jane Goodall Institute, construction of the long-term database was supported by grants from the NSF (DBS-9021946, SBR-9319909, BCS-0452315, IOS-1052693, IOS-1457260), the Harris Steel Group, the Windibrow Foundation, the University of Minnesota, and Duke University, genetic analyses were supported by grants from the NIH (R01 AI 050529), and Feldblum and Krupenye were supported by NSF GRFP grants (both DGE-1106401), and Feldblum was supported by the L. S. B. Leakey Foundation.
+Data collection was supported by the Jane Goodall Institute, construction of the long-term database was supported by grants from the NSF (DBS-9021946, SBR-9319909, BCS-0452315, IOS-1052693, IOS-1457260), the Harris Steel Group, the Windibrow Foundation, the University of Minnesota, and Duke University, and Feldblum was supported by NSF GRFP grants (DGE-1106401), and Feldblum was supported by the L. S. B. Leakey Foundation.
 
 <hr/> 
 
