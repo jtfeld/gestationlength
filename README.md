@@ -55,7 +55,7 @@ DATA SPECIFIC INFORMATION
 
 Contained are the files:
 
-**XXX.R**
+**gest_length_analyses_anon.R**
 
 Uses the datafiles: gestation_data.rds and big_firstborn_data_anon.rds
 
