@@ -4,7 +4,7 @@ Last updated: Sept 21, 2021
 
 Code and data for:  
 
-### Predictors and consequences of gestation length in the wild chimpanzees of Gombe National Park, Tanzania
+### Predictors and consequences of gestation length in free-living chimpanzees
 
 by Joseph T. Feldblum, Emily E. Boehm, Kara K. Walker, Anne E. Pusey
 
@@ -16,7 +16,7 @@ Lead Authors:
 
 Additional authors: 
 
-**Kara K. Walker** (Department of XXX, North Carolina State University)\
+**Kara K. Walker** (Department of Clinical Sciences, College of Veterinary Medicine,  North Carolina State University)\
 **Anne E. Pusey** (Department of Evolutionary Anthropology, Duke University)
 
 Contact person for questions: Joseph T. Feldblum (feldblum@umich.edu)
@@ -43,11 +43,11 @@ All rights reserved
 
 Publications using these scripts and data:  
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in the wild chimpanzees of Gombe National Park, Tanzania
+Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in free-living chimpanzees
 
 Recommended citation for this dataset: 
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in the wild chimpanzees of Gombe National Park, Tanzania
+Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in free-living chimpanzees
 
 <hr/> 
 
