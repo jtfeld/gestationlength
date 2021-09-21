@@ -17,7 +17,7 @@ Lead Authors:
 Additional authors: 
 
 **Kara K. Walker** (Department of XXX, North Carolina State University)\
-**Anne E. Pusey** (Department of Evolutionary Anthropology, Duke University)\
+**Anne E. Pusey** (Department of Evolutionary Anthropology, Duke University)
 
 Contact person for questions: Joseph T. Feldblum (feldblum@umich.edu)
 
