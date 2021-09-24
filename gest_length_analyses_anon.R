@@ -622,3 +622,53 @@ model.avg(best_mod_rank)
 # ------------- survival by firstborn status in bigger sample -----------------
 
 fb2 = readRDS("big_firstborn_data_anon.rds")
+
+fitfb = coxme(Surv(time = longev, 
+                   event = (departtype == "D")) ~ 
+                sex + 
+                firstborn + 
+                (1|momid_anon), 
+              data = fb2,
+              na.action = na.fail)
+
+summary(fitfb)
+
+fitfb2 = coxph(Surv(time = longev, 
+                   event = (departtype == "D")) ~ 
+                sex + 
+                firstborn, 
+              data = fb2,
+              na.action = na.fail)
+summary(fitfb2)
+
+fb_df = data.frame(firstborn = c(TRUE, FALSE),
+                   sex = 0)
+# fb_df
+
+fit = survfit(fitfb2, newdata = fb_df)
+
+a = ggsurvplot(fit = fit, data = fb_df, conf.int = T, censor = FALSE,
+               main = "Survival by infant firstborn status", 
+               xlab = "Offspring age (years)",
+               # palette = "Spectral",
+               ggtheme = theme_jtf(),
+               legend.title = "Firstborn:",
+               legend.labs = c("True", "False")) +
+  labs(tag = "A")
+
+sex_df = data.frame(firstborn = FALSE,
+                    sex = c(1, -1))
+# sex_df
+
+fit = survfit(fitfb2, newdata = sex_df)
+
+b = ggsurvplot(fit = fit, data = sex_df, conf.int = T, censor = FALSE,
+               main = "Survival by infant firstborn status", 
+               xlab = "Offspring age (years)",
+               # palette = "Spectral",
+               ggtheme = theme_jtf(),
+               legend.title = "Offspring sex:",
+               legend.labs = c("Male", "Female")) +
+  labs(tag = "B")
+
+arrange_ggsurvplots(list(a, b), ncol = 2, nrow = 1, title = "Predicted Infant Survival")
