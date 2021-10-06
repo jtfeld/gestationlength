@@ -1,10 +1,10 @@
 # Predictors and Consequences of Gestation Length in Chimpanzees
 
-Last updated: Sept 21, 2021
+Last updated: October 6, 2021
 
 Code and data for:  
 
-### Predictors and consequences of gestation length in free-living chimpanzees
+### Predictors and consequences of gestation length in wild chimpanzees
 
 by Joseph T. Feldblum, Emily E. Boehm, Kara K. Walker, Anne E. Pusey
 
@@ -12,7 +12,7 @@ Lead Authors:
 
 **Joseph T. Feldblum** (Department of Anthropology and Society of Fellows, University of Michigan; Department of Evolutionary Anthropology, Duke University | feldblum@umich.edu)
 
-**Emily E. Boehm** (University of North Carolina, Chapel Hill)
+**Emily E. Boehm** (Center for Faculty Excellence, University of North Carolina, Chapel Hill)
 
 Additional authors: 
 
@@ -45,19 +45,19 @@ Publications using these scripts and data:
 
 Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in free-living chimpanzees
 
-Recommended citation for this dataset: 
+Recommended citation for this data set: 
 
 Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in free-living chimpanzees
 
 <hr/> 
 
-DATA SPECIFIC INFORMATION
+DATA-SPECIFIC INFORMATION
 
 Contained are the files:
 
 **gest_length_analyses_anon.R**
 
-Uses the datafiles: gestation_data.rds and big_firstborn_data_anon.rds
+Uses the data files: gestation_data.rds and big_firstborn_data_anon.rds
 
 And produces results depicted in: Figures 1, 2, 3, S1; Tables 2, 3, 4, S1, S2, S3
 
