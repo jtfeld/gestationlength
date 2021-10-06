@@ -32,11 +32,6 @@ visreg(fit = m0_tri3, xvar = "wet_szn_3rd_trim")
 m0_tri1 = lmer(gest_length ~ wet_szn_1st_trim + (1|mat_id_anon), data = multipar) 
 visreg(fit = m0_tri1, xvar = "wet_szn_1st_trim")   
 
-temp = 
-  data.frame(season = c("wet", "dry", "wet"),
-             start = c(0.5, 5, 10),
-             end = c(5, 10, 12.5))
-
 igi_vif = lm(gest_length ~  
                mat_age_z
              + I(mat_age_z^2)
