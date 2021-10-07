@@ -1,0 +1,27 @@
+# YAML 1.2
+---
+authors: 
+  -
+    affiliation: "Department of Anthropology and Society of Fellows, University of Michigan"
+    family-names: Feldblum
+    given-names: "Joseph T."
+    orcid: "https://orcid.org/0000-0002-7515-4632"
+  -
+    affiliation: "Center for Faculty Excellence, University of North Carolina, Chapel Hill"
+    family-names: Boehm
+    given-names: "Emily E."
+  -
+    affiliation: "Department of Clinical Sciences, College of Veterinary Medicine, North Carolina State University"
+    family-names: Walker
+    given-names: "Kara K."
+  -
+    affiliation: "Department of Evolutionary Anthropology, Duke University"
+    family-names: Pusey
+    given-names: "Anne E."
+cff-version: "1.1.0"
+date-released: 2021-10-07
+doi: "10.5281/zenodo.5555096"
+message: "If you use this software, please cite it using these metadata."
+title: "Code and data for:  Predictors and consequences of gestation length in wild chimpanzees"
+version: "0.2"
+...
