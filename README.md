@@ -1,5 +1,8 @@
 # Predictors and Consequences of Gestation Length in Chimpanzees
 
+[![DOI](https://zenodo.org/badge/408659648.svg)](https://zenodo.org/badge/latestdoi/408659648)
+
+
 Last updated: October 6, 2021
 
 Code and data for:  
