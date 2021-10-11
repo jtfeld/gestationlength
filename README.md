@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/408659648.svg)](https://zenodo.org/badge/latestdoi/408659648)
 
 
-Last updated: October 6, 2021
+Last updated: October 11, 2021
 
 Code and data for:  
 
@@ -46,11 +46,11 @@ All rights reserved
 
 Publications using these scripts and data:  
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in free-living chimpanzees
+Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in wild chimpanzees
 
 Recommended citation for this data set: 
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in free-living chimpanzees
+Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in wild chimpanzees
 
 <hr/> 
 
