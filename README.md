@@ -3,7 +3,7 @@
 [![DOI](https://zenodo.org/badge/408659648.svg)](https://zenodo.org/badge/latestdoi/408659648)
 
 
-Last updated: October 11, 2021
+Last updated: May 20, 2022
 
 Code and data for:  
 
@@ -62,7 +62,7 @@ Contained are the files:
 
 Uses the data files: gestation_data.rds and big_firstborn_data_anon.rds
 
-And produces results depicted in: Figures 1, 2, 3, S1; Tables 2, 3, 4, S1, S2, S3
+And produces results depicted in: Figures 1, 2, S1; Tables 2, 3, S2, S3, S4
 
 
 \
