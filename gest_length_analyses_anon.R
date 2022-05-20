@@ -1,5 +1,5 @@
 
-# Sept 21, 2021
+# March 13, 2022
 # code to produce figures and final results tables from anonymized 
 # publication data
 
@@ -13,26 +13,26 @@ library(sjPlot)
 library(lubridate)
 library(ggpubr)
 
-all_gests = readRDS("gestation_data.rds")
+all_gestations = readRDS("gestation_data.rds")
 
-multipar = 
-  all_gests %>%
+multipar_gests = 
+  all_gestations %>%
   filter(twin == 0, firstborn == 0)
 
 # ----------------- gestation length analysis -------------------------------------------------------
 
 # some quick exploratory analyses
 
-m0_matage = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + (1|mat_id_anon), data = multipar)
+m0_matage = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + (1|mat_id_anon), data = multipar_gests)
 visreg(fit = m0_matage, xvar = "mat_age", xlab = "maternal age", ylab = "predicted gest length")
 
-m0_tri3 = lmer(gest_length ~ wet_szn_3rd_trim + (1|mat_id_anon), data = multipar) 
+m0_tri3 = lmer(gest_length ~ wet_szn_3rd_trim + (1|mat_id_anon), data = multipar_gests) 
 visreg(fit = m0_tri3, xvar = "wet_szn_3rd_trim")                 
 
-m0_tri1 = lmer(gest_length ~ wet_szn_1st_trim + (1|mat_id_anon), data = multipar) 
+m0_tri1 = lmer(gest_length ~ wet_szn_1st_trim + (1|mat_id_anon), data = multipar_gests) 
 visreg(fit = m0_tri1, xvar = "wet_szn_1st_trim")   
 
-igi_vif = lm(gest_length ~  
+gest_length_vif = lm(gest_length ~  
                mat_age_z
              + I(mat_age_z^2)
              + birth_order
@@ -42,21 +42,21 @@ igi_vif = lm(gest_length ~
              + last_inf_died
              + inf_sex
              + provisioned, 
-             data = multipar)
-vif_res = vif(igi_vif)
+             data = multipar_gests)
+vif_res = vif(gest_length_vif)
 vif_res
 
-plot(multipar$mat_age_z ~ multipar$birth_order, 
+plot(multipar_gests$mat_age_z ~ multipar_gests$birth_order, 
      main = "Maternal age vs Birth Order",
      xlab = "Birth order", ylab = "Maternal age")
 
-plot(multipar$wet_szn_3rd_trim ~ multipar$wet_szn_1st_trim, 
+plot(multipar_gests$wet_szn_3rd_trim ~ multipar_gests$wet_szn_1st_trim, 
      main = "First vs third trimester in wet season")
 
 
 # fit model (with REML):
 
-igi_model1 = lmer(gest_length ~ 
+gest_length_model1 = lmer(gest_length ~ 
                     mat_age_z + 
                     I(mat_age_z^2) + 
                     birth_order + 
@@ -67,12 +67,12 @@ igi_model1 = lmer(gest_length ~
                     inf_sex + 
                     provisioned +
                     (1|mat_id_anon), 
-                  data = multipar, REML = T, na.action = na.fail)
-summary(igi_model1)
+                  data = multipar_gests, REML = T, na.action = na.fail)
+summary(gest_length_model1)
 
 # fit model (no REML for model comparisons):
 
-igi_model2 = lmer(gest_length ~ 
+gest_length_model2 = lmer(gest_length ~ 
                     mat_age_z + 
                     I(mat_age_z^2) + 
                     birth_order + 
@@ -83,14 +83,14 @@ igi_model2 = lmer(gest_length ~
                     inf_sex + 
                     provisioned +
                     (1|mat_id_anon), 
-                  data = multipar, REML = F, na.action = na.fail)
-summary(igi_model2)
+                  data = multipar_gests, REML = F, na.action = na.fail)
+summary(gest_length_model2)
 
 # ranking models by AICc using Maximum Likelihood:
 
-getAllTerms(igi_model2)
+getAllTerms(gest_length_model2)
 
-all_m_gest = dredge(igi_model2, rank = AICc, trace = 2, 
+all_m_gest_length = dredge(gest_length_model2, rank = AICc, trace = 2, 
                     subset = (!(mat_age_z && birth_order) & 
                                 !(`I(mat_age_z^2)` && !mat_age_z) &
                                 !(wet_szn_3rd_trim && wet_szn_1st_trim)# &
@@ -99,29 +99,29 @@ all_m_gest = dredge(igi_model2, rank = AICc, trace = 2,
                     # REML = FALSE 
 )
 
-all_m_gest = subset(all_m_gest, !nested(.))
+all_m_gest_length = subset(all_m_gest_length, !nested(.))
 
-best_m_gest = get.models(all_m_gest, subset = delta<6)
+best_m_gest_length = get.models(all_m_gest_length, subset = delta<6)
 
-model.sel(best_m_gest)
+model.sel(best_m_gest_length)
 
-model.avg(best_m_gest)
+model.avg(best_m_gest_length)
 
-igi_mod_sm = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + igi + (1|mat_id_anon), 
-                  data = multipar, REML = T, na.action = na.fail)
+gest_length_mod_sm = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + igi + (1|mat_id_anon), 
+                  data = multipar_gests, REML = T, na.action = na.fail)
 
-r.squaredGLMM(igi_mod_sm)
+r.squaredGLMM(gest_length_mod_sm)
 
 # double check that the high R2c value not driven by females with single 
 # offspring in sample: 
 
-multipar %>%
+multipar_gests %>%
   count(mat_id_anon) %>%
   pull(n) %>%
   table()
 
-temp_igi_mod_sm = 
-  multipar %>%
+temp_gest_length_mod_sm = 
+  multipar_gests %>%
   group_by(mat_id_anon) %>%
   mutate(nobs = n()) %>%
   as.data.frame() %>%
@@ -129,9 +129,9 @@ temp_igi_mod_sm =
   lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + igi + (1|mat_id_anon), 
        data = ., REML = T, na.action = na.fail) 
 
-summary(temp_igi_mod_sm)
+summary(temp_gest_length_mod_sm)
 
-r.squaredGLMM(temp_igi_mod_sm)
+r.squaredGLMM(temp_gest_length_mod_sm)
 
 
 theme_jtf = function (base_size = 11, base_family = "") {
@@ -145,24 +145,21 @@ theme_jtf = function (base_size = 11, base_family = "") {
 theme_set(theme_jtf())
 
 
-igi_mod_sm = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + igi + (1|mat_id_anon), 
-                  data = multipar, REML = T, na.action = na.fail)
+gest_length_mod_sm = lmer(gest_length ~ scale(mat_age) + I(scale(mat_age)^2) + igi + (1|mat_id_anon), 
+                  data = multipar_gests, REML = T, na.action = na.fail)
 
 
-plot_model(igi_mod_sm, type = "pred", terms = "mat_age [all]") +
+plot_model(gest_length_mod_sm, type = "pred", terms = "mat_age [all]", show.data = T) +
   xlab("Maternal age (years)") +
   ylab("Gestation length (days)") +
   ggtitle(label = NULL) + 
   ylim(205, 255)
 
-# plot_model(igi_mod_sm, type = "pred", terms = "igi [all]") +
-#   xlab("Inter-gestational interval (years)") +
-#   ylab("Gestation length (days)")
 
-igi_mod_sm = lmer(gest_length ~ mat_age_z + I(mat_age_z^2) + igi + (1|mat_id_anon),
-                  data = multipar, REML = T, na.action = na.fail)
+gest_length_mod_sm = lmer(gest_length ~ mat_age_z + I(mat_age_z^2) + igi + (1|mat_id_anon),
+                  data = multipar_gests, REML = T, na.action = na.fail)
 
-plot_model(igi_mod_sm, type = "pred", terms = "igi [all]") +
+plot_model(gest_length_mod_sm, type = "pred", terms = "igi [all]", show.data = T) +
   xlab("Inter-gestational interval (years)") +
   ylab("Gestation length (days)") +
   ggtitle(label = NULL) +
@@ -171,21 +168,21 @@ plot_model(igi_mod_sm, type = "pred", terms = "igi [all]") +
 
 # ------------- double check about female rank -----------------
 
-head(multipar)
+head(multipar_gests)
 
-sum(!is.na(multipar$mat_rank_concept))
+sum(!is.na(multipar_gests$mat_rank_concept))
 
-nrow(multipar)
+nrow(multipar_gests)
 
-multipar3 =
-  multipar %>% 
+multipar_gests3 =
+  multipar_gests %>% 
   mutate(igiz = scale(igi),
          mat_age_z2 = mat_age_z^2) %>%
   filter(!is.na(mat_rank_concept))
 
-nrow(multipar3)
+nrow(multipar_gests3)
 
-igi_model3 = lmer(gest_length ~ 
+gest_length_model3 = lmer(gest_length ~ 
                     mat_age_z + 
                     mat_age_z2 + 
                     birth_order + 
@@ -197,21 +194,21 @@ igi_model3 = lmer(gest_length ~
                     # provisioned +
                     scale(mat_rank_concept) +
                     (1|mat_id_anon), 
-                  data = multipar3, REML = F, na.action = na.fail)
-summary(igi_model3)
+                  data = multipar_gests3, REML = F, na.action = na.fail)
+summary(gest_length_model3)
 
 # Since we had some trouble with convergence doing a full model comparison, we'll  
 # just compare the best model for gest length to that model plus maternal rank 
 # at conception
 
-dim(multipar3)
+dim(multipar_gests3)
 
 gest_mod_sm = lmer(gest_length ~ 
                      mat_age_z 
                    + mat_age_z2
                    + igiz
                    + (1|mat_id_anon),
-                   data = multipar3, REML = F, na.action = na.fail)
+                   data = multipar_gests3, REML = F, na.action = na.fail)
 
 AICc(gest_mod_sm)
 
@@ -221,15 +218,25 @@ gest_mod_sm2 = lmer(gest_length ~
                     + igiz
                     + scale(mat_rank_concept)
                     + (1|mat_id_anon),
-                    data = multipar3, REML = F, na.action = na.fail)
+                    data = multipar_gests3, REML = F, na.action = na.fail)
 
 summary(gest_mod_sm2)
+
+gest_mod_sm3 = lmer(gest_length ~ 
+                      mat_age_z 
+                    + mat_age_z2
+                    # + igiz
+                    + scale(mat_rank_concept)
+                    + (1|mat_id_anon),
+                    data = multipar_gests3, REML = F, na.action = na.fail)
+
+summary(gest_mod_sm3)
 
 model.sel(gest_mod_sm, gest_mod_sm2, gest_mod_sm3) 
 
 # =============================== Survival analysis =============================
 
-# Sept 21, 2021
+# March 13, 2022
 # clean code to produce figures and final results tables
 
 library(survival)
@@ -242,12 +249,15 @@ library(ggplot2)
 library(survminer)
 library(sjPlot)
 
-all_gests = readRDS("gestation_data.rds")
+all_gestations = readRDS("gestation_data.rds")
 
-surv2 = all_gests
+survdat = all_gestations
 
 
-nrow(surv2) # 53
+# this analysis does not exclude victims of infanticide/kidnapping
+# or twins.  Found in supplementary materials and Table S3
+
+nrow(survdat) # 53
 
 cox.zph(coxph(Surv(time = lifespan, 
                    event = departtype == "D") ~ 
@@ -259,18 +269,18 @@ cox.zph(coxph(Surv(time = lifespan,
                 firstborn +
                 orphan + 
                 frailty(mat_id_anon), 
-              data = surv2,
+              data = survdat,
               na.action = na.fail))
 
-surv2 %>% 
+survdat %>% 
   filter(orphan == 1)
 # 3 offspring, all die before age 2, easiest to just leave them out
 
-surv2 = 
-  surv2 %>%
+survdat = 
+  survdat %>%
   filter(orphan == 0)
 
-nrow(surv2)
+nrow(survdat)
 
 res_cox = coxph(Surv(time = lifespan, 
                      event = departtype == "D") ~ 
@@ -281,7 +291,7 @@ res_cox = coxph(Surv(time = lifespan,
                   I(scale(gest_length)^2) +
                   firstborn + 
                   frailty(mat_id_anon), 
-                data = surv2,
+                data = survdat,
                 na.action = na.fail)
 
 cox.zph(res_cox)
@@ -290,16 +300,16 @@ ggcoxzph(cox.zph(res_cox))
 
 # ok, we'll stratify the by infant sex to ensure data fit PH assumptions:
 
-dim(surv2)
+dim(survdat)
 
-table(surv2$inf_sex)
+table(survdat$inf_sex)
 
 # having a stratum with one individual shouldn't influence estimates, 
 # effective sample size is 49 anyway, so we'll just remove the one 
 # inf_sex == 0 (i.e. unknown sex) individual
 
-surv2 =
-  surv2 %>% 
+survdat =
+  survdat %>% 
   filter(inf_sex != 0)
 
 res_cox = coxph(Surv(time = lifespan, 
@@ -312,7 +322,7 @@ res_cox = coxph(Surv(time = lifespan,
                   firstborn + 
                   twin +
                   frailty(mat_id_anon), 
-                data = surv2,
+                data = survdat,
                 na.action = na.fail)
 
 cox.zph(res_cox)
@@ -328,8 +338,8 @@ ggcoxzph(cox.zph(res_cox))
 # to make model comparisons simpler we'll define a new 
 # variable for squared maternal age and squared gest length
 
-surv4 = 
-  surv2 %>%
+survdat2 = 
+  survdat %>%
   mutate(mat_age_z = scale(mat_age),
          mat_age_z2 = mat_age_z^2,
          gest_length_z = scale(gest_length),
@@ -341,7 +351,7 @@ surv4 =
 # because they disappeared at a time when they could plausibly have 
 # emmigrated.  See manuscript for more details.
 
-cox_full2 = coxme(Surv(time = lifespan, 
+surv_m_full2 = coxme(Surv(time = lifespan, 
                        event = departtype == "D") ~ 
                     strata(inf_sex) +
                     mat_age_z + 
@@ -351,97 +361,121 @@ cox_full2 = coxme(Surv(time = lifespan,
                     firstborn +
                     twin +
                     (1|mat_id_anon), 
-                  data = surv4,
+                  data = survdat2,
                   na.action = na.fail)
-summary(cox_full2)
+summary(surv_m_full2)
 
-MuMIn::getAllTerms(cox_full2)
+MuMIn::getAllTerms(surv_m_full2)
 
-all_mod_full = dredge(
-  cox_full2, rank = AICc, trace = T, 
+all_surv_m_full = dredge(
+  surv_m_full2, rank = AICc, trace = T, 
   subset = (!(mat_age_z2 && !mat_age_z) & 
               !(gest_length_z2 && !gest_length_z))
 )
 
-all_mod_full = subset(all_mod_full, !nested(.))
+all_surv_m_full = subset(all_surv_m_full, !nested(.))
 
-best_mod_full = get.models(all_mod_full, subset = delta < 6)
+best_surv_m_full = get.models(all_surv_m_full, subset = delta < 6)
 
-model.sel(best_mod_full) 
+model.sel(best_surv_m_full) 
 
-model.avg(best_mod_full)
+model.avg(best_surv_m_full)
 
-# ---------------------- plot best model lifetime survival full dataset --------------
+# ------------------- Main survival analysis --------------------
 
-# best model
+survdat = all_gestations
 
-best_mod_full = coxph(Surv(time = lifespan, 
-                           event = departtype == "D") ~ 
-                        strata(inf_sex) + 
-                        gest_length + 
-                        mat_age_z +
-                        I(mat_age_z^2), 
-                      data = surv4,
-                      na.action = na.fail)
-summary(best_mod_full)
+survdat = 
+  survdat %>% 
+  filter(unnat_death == 0, twin == 0)
 
-# ok thing to remember is that only 4 females died
-surv4 %>% count(inf_sex, right_cens)
+# this analysis excludes victims of infanticide/kidnapping
+# and twins.  Produces results found in Table 3
 
-age_qs = quantile(surv4$mat_age_z, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+nrow(survdat) # 42
 
-age_df = data.frame(mat_age_z = unname(age_qs),
-                    gest_length = mean(surv4$gest_length),
-                    inf_sex = 1)
+cox.zph(coxph(Surv(time = lifespan, 
+                   event = departtype == "D") ~ 
+                inf_sex + 
+                scale(mat_age) + 
+                I(scale(mat_age)^2) +
+                scale(gest_length) + 
+                I(scale(gest_length)^2) +
+                firstborn +
+                orphan + 
+                frailty(mat_id_anon), 
+              data = survdat,
+              na.action = na.fail))
 
-fit = survfit(best_mod_full, newdata = age_df)
+survdat %>% 
+  filter(orphan == 1)
+# 3 offspring, all die before age 2, easiest to just leave them out
 
-ggsurvplot(fit = fit, data = age_df, conf.int = F, censor = FALSE,
-               main = "Survival by maternal age",
-               xlab = "Offspring age (years)",
-               ggtheme = theme_jtf(),
-               legend.title = "Mom age:",
-               legend.labs = names(age_qs)) + 
-  labs(tag = "A")
+survdat = 
+  survdat %>%
+  filter(orphan == 0)
 
-gest_qs = quantile(surv4$gest_length, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+nrow(survdat)
 
-gest_df = data.frame(mat_age_z = 0,
-                     gest_length = unname(gest_qs),
-                     inf_sex = 1)
+surv_mod_init = coxph(Surv(time = lifespan, 
+                     event = departtype == "D") ~ 
+                  inf_sex + 
+                  scale(mat_age) + 
+                  I(scale(mat_age)^2) +
+                  scale(gest_length) + 
+                  I(scale(gest_length)^2) +
+                  firstborn + 
+                  frailty(mat_id_anon), 
+                data = survdat,
+                na.action = na.fail)
 
-fit = survfit(best_mod_full, newdata = gest_df)
+cox.zph(surv_mod_init)
 
-ggsurvplot(fit = fit, data = gest_df, conf.int = F, censor = FALSE,
-               main = "Survival by gestation length", 
-               xlab = "Offspring age (years)",
-               # palette = "RdYlBu",
-               ggtheme = theme_jtf(),
-               legend.title = "Gest length:",
-               legend.labs = names(gest_qs)) + # or maybe just do high vs low...
-  labs(tag = "C")
+ggcoxzph(cox.zph(surv_mod_init))
 
-sex_df = data.frame(mat_age_z = 0,
-                    gest_length = mean(surv4$gest_length),
-                    inf_sex = c(1, -1))
+# ok, we'll stratify the by infant sex to ensure data fit PH assumptions:
 
-fit = survfit(best_mod_full, newdata = sex_df)
+dim(survdat)
 
-ggsurvplot(fit = fit, data = sex_df, conf.int = T, censor = T,
-               main = "Survival by infant firstborn status", 
-               xlab = "Offspring age (years)",
-               ggtheme = theme_jtf(),
-               legend.title = "Offspring sex:",
-               legend.labs = c("Male", "Female")) + 
-  labs(tag = "B")
+table(survdat$inf_sex)
 
-# ------------------- remove twin births -------------------------
+# having a stratum with one individual shouldn't influence estimates, 
+# effective sample size is 49 anyway, so we'll just remove the one 
+# inf_sex == 0 (i.e. unknown sex) individual
 
-surv4 = 
-  surv4 %>%
-  filter(twin == 0)
+survdat =
+  survdat %>% 
+  filter(inf_sex != 0)
 
-cox_full2 = coxme(Surv(time = lifespan, 
+surv_mod_init = coxph(Surv(time = lifespan, 
+                     event = departtype == "D") ~ 
+                  strata(inf_sex) + 
+                  scale(mat_age) + 
+                  I(scale(mat_age)^2) +
+                  scale(gest_length) + 
+                  I(scale(gest_length)^2) +
+                  firstborn + 
+                  frailty(mat_id_anon), 
+                data = survdat,
+                na.action = na.fail)
+
+cox.zph(surv_mod_init)
+
+plot(cox.zph(surv_mod_init))
+
+ggcoxzph(cox.zph(surv_mod_init))
+
+# ------------------- run survival models (main analysis) -------------------------
+
+# to simplify model comparison we'll create new scaled age/ gestation variables
+survdat2 =
+  survdat %>%
+  mutate(mat_age_z = scale(mat_age),
+         mat_age_z2 = mat_age_z^2,
+         gest_length_z = scale(gest_length),
+         gest_length_z2 = gest_length_z^2) 
+
+surv_m_full2 = coxme(Surv(time = lifespan, 
                        event = departtype == "D") ~ 
                     strata(inf_sex) + 
                     mat_age_z + 
@@ -449,143 +483,98 @@ cox_full2 = coxme(Surv(time = lifespan,
                     gest_length_z + 
                     gest_length_z2 +
                     firstborn +
-                    # twin +
                     (1|mat_id_anon), 
-                  data = surv4,
+                  data = survdat2,
                   na.action = na.fail)
-summary(cox_full2)
+summary(surv_m_full2)
 
-all_mod_full = dredge(cox_full2, rank = AICc, trace = 2, 
+all_surv_m_main = dredge(surv_m_full2, rank = AICc, trace = 2, 
                       subset = (!(mat_age_z2 && !mat_age_z) & 
                                   !(gest_length_z2 && !gest_length_z))
 )
 
-all_mod_full = subset(all_mod_full, !nested(.))
+all_surv_m_main = subset(all_surv_m_main, !nested(.))
 
-best_mod_full = get.models(all_mod_full, subset = delta < 6)
+best_surv_m_main = get.models(all_surv_m_main, subset = delta < 6)
 
-model.sel(best_mod_full) 
+model.sel(best_surv_m_main) 
 
-model.avg(best_mod_full)
+model.avg(best_surv_m_main)
 
 # ------------- plot lifetime survival no twin births -------------------
 
-best_mod_full = coxph(Surv(time = lifespan, 
+best_surv_main_mod = coxph(Surv(time = lifespan, 
                            event = departtype == "D") ~ 
                         strata(inf_sex) + 
                         gest_length + 
                         firstborn, 
-                      data = surv4,
+                      data = survdat2,
                       na.action = na.fail)
 
-summary(best_mod_full)
+summary(best_surv_main_mod)
 
-surv4 %>% count(inf_sex, departtype) # only 4 of 17 females died, 17 of 26 males died
+survdat2 %>% count(inf_sex, departtype) # only 2 of 15 females died, 14 of 23 males died
 
 fb_df = data.frame(firstborn = c(1, 0),
-                   gest_length = mean(surv4$gest_length),
+                   gest_length = mean(survdat2$gest_length),
                    inf_sex = 1)
 
-fit = survfit(best_mod_full, newdata = fb_df)
+fit = survfit(best_surv_main_mod, newdata = fb_df)
 
 ggsurvplot(fit = fit, data = fb_df, conf.int = T, censor = FALSE,
-               main = "Survival by infant firstborn status", 
-               xlab = "Offspring age (years)",
-               ggtheme = theme_jtf(),
-               legend.title = "Firstborn status:",
-               legend.labs = c("Yes", "No")) +
+           main = "Survival by infant firstborn status", 
+           xlab = "Offspring age (years)",
+           ggtheme = theme_jtf(),
+           legend.title = "Firstborn status:",
+           legend.labs = c("Yes", "No")) +
   labs(tag = "A")
 
-gest_qs = quantile(surv4$gest_length, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
+gest_qs = c(218, 237)
 
 gest_df = data.frame(firstborn = 0,
                      gest_length = unname(gest_qs),
                      inf_sex = 1)
 
-fit = survfit(best_mod_full, newdata = gest_df)
+fit = survfit(best_surv_main_mod, newdata = gest_df)
 
-ggsurvplot(fit = fit, data = gest_df, conf.int = F, censor = FALSE,
-               main = "Survival by gestation length", 
-               xlab = "Offspring age (years)",
-               ggtheme = theme_jtf(),
-               legend.title = "Gest length:",
-               legend.labs = names(gest_qs)) + 
+ggsurvplot(fit = fit, data = gest_df, conf.int = T, censor = FALSE,
+           main = "Survival by gestation length", 
+           xlab = "Offspring age (years)",
+           # palette = "RdYlBu",
+           ggtheme = theme_jtf(),
+           legend.title = "Gestation length:",
+           legend.labs = c("218 days", "237 days")) + 
   labs(tag = "C")
 
 sex_df = data.frame(firstborn = 0,
-                    gest_length = mean(surv4$gest_length),
+                    gest_length = mean(survdat2$gest_length),
                     inf_sex = c(1, -1))
 
-fit = survfit(best_mod_full, newdata = sex_df)
+fit = survfit(best_surv_main_mod, newdata = sex_df)
 
 ggsurvplot(fit = fit, data = sex_df, conf.int = T, censor = TRUE,
-               main = "Survival by infant firstborn status", 
-               xlab = "Offspring age (years)",
-               ggtheme = theme_jtf(),
-               legend.title = "Offspring sex:",
-               legend.labs = c("Male", "Female")) + 
+           main = "Survival by infant firstborn status", 
+           xlab = "Offspring age (years)",
+           ggtheme = theme_jtf(),
+           legend.title = "Offspring sex:",
+           legend.labs = c("Male", "Female")) + 
   labs(tag = "B")
 
 
-# ------------------- KK sample with female Elo at siring ---------------------
 
-# include twins again:
-
-surv5 = 
-  surv2 %>%
-  mutate(mat_age_z = scale(mat_age),
-         mat_age_z2 = mat_age_z^2,
-         gest_length_z = scale(gest_length),
-         gest_length_z2 = gest_length_z^2) %>%
-  filter(!is.na(mat_rank_concept))
-
-dim(surv5) # 38 rows
-
-table(surv5$right_cens)
-
-surv5 %>% 
-  count(inf_sex, right_cens) # only 3/15 females died, 19/23 males died
-
-ranksurv2 = 
-  coxme(Surv(time = lifespan, 
-             event = departtype == "D") ~ 
-          strata(inf_sex)
-        + mat_age_z 
-        + mat_age_z2
-        + mat_rank_concept*gest_length_z
-        + gest_length_z2
-        + twin
-        +firstborn
-        + (1|mat_id_anon)
-        , 
-        data = surv5,
-        na.action = na.fail)
-
-all_mod_rank = dredge(ranksurv2, rank = AICc, trace = 2, 
-                      subset = (!(mat_age_z2 && !mat_age_z) & 
-                                  !(gest_length_z2 && !gest_length_z))
-)
-
-all_mod_rank = subset(all_mod_rank, !nested(.))
-
-best_mod_rank = get.models(all_mod_rank, subset = delta < 6)
-
-model.sel(best_mod_rank) 
-
-model.avg(best_mod_rank)
 
 #  ----------------- exclude twins from KK Elo sample ----------------
 
-surv5 = 
-  surv5 %>%
-  filter(twin == 0)
+survdat3 = 
+  survdat2 %>%
+  filter(!is.na(mat_rank_concept))
 
-# now 32 offspring
+# now 28 offspring
 
-surv5 %>%
+survdat3 %>%
   count(inf_sex, right_cens)
 
-table(surv5$right_cens)
+table(survdat3$right_cens)
 
 ranksurv2 = 
   coxme(Surv(time = lifespan, 
@@ -598,7 +587,7 @@ ranksurv2 =
         +firstborn
         + (1|mat_id_anon)
         , 
-        data = surv5,
+        data = survdat3,
         na.action = na.fail)
 
 all_mod_rank = dredge(ranksurv2, rank = AICc, trace = 2, 
@@ -629,11 +618,11 @@ fitfb = coxme(Surv(time = longev,
 summary(fitfb)
 
 fitfb2 = coxph(Surv(time = longev, 
-                   event = (departtype == "D")) ~ 
-                sex + 
-                firstborn, 
-              data = fb2,
-              na.action = na.fail)
+                    event = (departtype == "D")) ~ 
+                 sex + 
+                 firstborn, 
+               data = fb2,
+               na.action = na.fail)
 summary(fitfb2)
 
 fb_df = data.frame(firstborn = c(TRUE, FALSE),
