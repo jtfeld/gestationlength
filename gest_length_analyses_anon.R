@@ -409,7 +409,7 @@ cox.zph(coxph(Surv(time = lifespan,
 
 survdat %>% 
   filter(orphan == 1)
-# 3 offspring, all die before age 2, easiest to just leave them out
+# 3 offspring, all die before age 2, we will leave them out
 
 survdat = 
   survdat %>%
@@ -501,7 +501,7 @@ model.sel(best_surv_m_main)
 
 model.avg(best_surv_m_main)
 
-# ------------- plot lifetime survival no twin births -------------------
+# ------------- plot lifetime survival (main survival analysis) -------------------
 
 best_surv_main_mod = coxph(Surv(time = lifespan, 
                            event = departtype == "D") ~ 
@@ -563,7 +563,7 @@ ggsurvplot(fit = fit, data = sex_df, conf.int = T, censor = TRUE,
 
 
 
-#  ----------------- exclude twins from KK Elo sample ----------------
+#  ----------------- only offspring with known maternal rank at conception ----------------
 
 survdat3 = 
   survdat2 %>%
@@ -617,6 +617,8 @@ fitfb = coxme(Surv(time = longev,
 
 summary(fitfb)
 
+# plot:
+
 fitfb2 = coxph(Surv(time = longev, 
                     event = (departtype == "D")) ~ 
                  sex + 
@@ -642,7 +644,6 @@ a = ggsurvplot(fit = fit, data = fb_df, conf.int = T, censor = FALSE,
 
 sex_df = data.frame(firstborn = FALSE,
                     sex = c(1, -1))
-# sex_df
 
 fit = survfit(fitfb2, newdata = sex_df)
 
