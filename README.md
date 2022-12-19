@@ -46,11 +46,11 @@ All rights reserved
 
 Publications using these scripts and data:  
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted) Predictors and consequences of gestation length in wild chimpanzees
+Feldblum, J. T., Boehm, E. E., Walker, K. K., & Pusey, A. E. (2022). Predictors and consequences of gestation length in wild chimpanzees. American Journal of Biological Anthropology, 179(3), 417-430.
 
 Recommended citation for this data set: 
 
-Feldblum, J. T., Boehm, E. E., Walker, K. K., Pusey, A. E. (submitted). Data and code for: Predictors and consequences of gestation length in wild chimpanzees
+Feldblum, J. T., Boehm, E. E., Walker, K. K., & Pusey, A. E. (2022). Data and code for: Predictors and consequences of gestation length in wild chimpanzees. American Journal of Biological Anthropology, 179(3), 417-430.
 
 <hr/> 
 
